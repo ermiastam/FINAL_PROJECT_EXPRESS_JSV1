@@ -5,7 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var monk = require('monk');
-var db = monk('mongodb://swiftTeam:swift@ds035310.mlab.com:35310/swifthire');
+//var db = monk('mongodb://swiftTeam:swift@ds035310.mlab.com:35310/swifthire');
+var db = require('mongoskin').db('mongodb://swiftTeam:swift@ds035310.mlab.com:35310/swifthire');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
