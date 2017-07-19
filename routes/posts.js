@@ -25,6 +25,26 @@ router.get('/posts/post/:id', function(req, res, next) {
 });
 
 
+router.get('/posts/jobOwner/:email', function(req, res, next) {
+
+    var email =req.params.email;
+    console.log(email);
+    //var id=123;
+    var db = req.db;
+    var collection = db.bind('User');
+    collection.find({$and:[{"email":email}]}).toArray(
+        function(err,data){
+            if(err)throw err;
+            /*collection.find({"email": "ermias@yahoo.com"},function(err,data){
+             if(err)throw err;
+             */
+            console.log("hello data"+data.toString());
+
+            res.json(data);
+        });
+});
+
+
 router.get('/posts', function(req, res, next) {
 
     // var email=req.params.email;
