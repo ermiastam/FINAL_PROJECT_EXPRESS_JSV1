@@ -45,6 +45,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('strict routing',true);
 
 // Make our db accessible to our router
 app.use(function(req,res,next){
@@ -80,4 +81,4 @@ app.use(function(err, req, res, next) {
 // });
 
 module.exports = app;
-app.listen(3000);
+app.listen(5000);
