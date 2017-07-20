@@ -108,9 +108,9 @@ router.get('/posts/:email', function(req, res, next) {
     var applicantsemail = {applicantsEmail:{$nin: [email]}};
     var posteremail = {email:{$ne:email}}
 
-    var prefereddate = {"preferedDate": {"$gte":new Date()}};
+    var prefereddate = {"preferedDate": {"$gte":new Date().toISOString()}};
 
-    var query={$and:[mylocation,applicantsemail,posteremail]};
+    var query={$and:[mylocation,applicantsemail,posteremail,prefereddate]};
 
     var collection = db.bind('post');
     collection.find(query).limit(10).toArray(
@@ -154,6 +154,35 @@ router.post('/posts/check/', function(req, res, next) {
     var db = req.db;
     var collection = db.bind('post');
     collection.findOne({$and:[{"_id":ObjectId(id)},{applicantsEmail:{$in: [email]}}]},
+        function(err,data){
+            if(err)throw err;
+            /*collection.find({"email": "ermias@yahoo.com"},function(err,data){
+             if(err)throw err;
+             */
+            console.log(data);
+
+            res.json(data);
+        });
+});
+
+
+router.post('/posts/category/', function(req, res, next) {
+    var  email = req.body.email;
+    var cat = req.body.category;
+
+console.log(email+cat);
+    var applicantsemail = {applicantsEmail:{$nin: [email]}};
+    var posteremail = {email:{$ne:email}}
+    var category ={category:cat};
+    var prefereddate = {"preferedDate": {"$gte":new Date().toISOString()}};
+
+
+    var query={$and:[applicantsemail,posteremail,prefereddate,category]};
+
+
+    var db = req.db;
+    var collection = db.bind('post');
+    collection.find(query).limit(10).toArray(
         function(err,data){
             if(err)throw err;
             /*collection.find({"email": "ermias@yahoo.com"},function(err,data){
