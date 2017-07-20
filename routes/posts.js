@@ -24,10 +24,52 @@ router.get('/posts/post/:id', function(req, res, next) {
         });
 });
 
+router.get('/posts', function(req, res, next) {
+
+
+    var db = req.db;
+    var collection = db.bind('post');
+    collection.find({}).toArray(
+        function(err,data){
+            if(err)throw err;
+            /*collection.find({"email": "ermias@yahoo.com"},function(err,data){
+             if(err)throw err;
+             */
+            console.log(data);
+
+            res.json(data);
+        });
+});
+
+
+router.get('/posts/byfee/:email', function(req, res, next) {
+
+    var email =req.params.email;
+
+
+    var applicantemail = {applicantsEmail:{$nin: [email]}};
+    var posteremail = {email:{$ne:email}};
+    var preferedDate = { preferedDate: {"$gte":new Date().toISOString()}};
+    var query={$and:[applicantemail,posteremail,preferedDate]};
+    //var id=123;
+    var db = req.db;
+    var collection = db.bind('post');
+    collection.find(query).sort({hourlyFee:-1}).limit(10).toArray(
+        function(err,data){
+            if(err)throw err;
+            /*collection.find({"email": "ermias@yahoo.com"},function(err,data){
+             if(err)throw err;
+             */
+            console.log(data);
+
+            res.json(data);
+        });
+});
 
 router.get('/posts/jobOwner/:email', function(req, res, next) {
 
     var email =req.params.email;
+    console.log('Here')
     console.log(email);
     //var id=123;
     var db = req.db;
@@ -45,13 +87,33 @@ router.get('/posts/jobOwner/:email', function(req, res, next) {
 });
 
 
-router.get('/posts', function(req, res, next) {
+router.get('/posts/:email', function(req, res, next) {
 
-    // var email=req.params.email;
+       var email=req.params.email;
     // console.log(email);
     var db = req.db;
+
+    var mylocation = {
+        'location': {
+            $near: {
+                $geometry: { type: "Point", coordinates: [-91.959114, 41.00563]},
+                $maxDistance: 2000
+            }
+        }
+
+    };
+
+
+
+    var applicantsemail = {applicantsEmail:{$nin: [email]}};
+    var posteremail = {email:{$ne:email}}
+
+    var prefereddate = {"preferedDate": {"$gte":new Date()}};
+
+    var query={$and:[mylocation,applicantsemail,posteremail]};
+
     var collection = db.bind('post');
-    collection.find({$and:[{location:{$near:{$geometry:{type:"Point",coordinates:[-91.9612,41.01329]},$maxDistance:2000}}}]}).limit(10).toArray(
+    collection.find(query).limit(10).toArray(
 
         function(err,data){
             if(err)throw err;
